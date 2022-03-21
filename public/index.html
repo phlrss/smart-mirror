@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Smart Mirror</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        background-color: black;
+        color: white;
+        font-family: "Roboto", sans-serif;
+      }
+      .weather-widget {
+        text-align: right;
+        margin-top: 24px;
+        margin-right: 24px;
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+        font-size: 22px;
+      }
+      .weather-location {
+        text-align: center;
+      }
+      .weather-text,
+      .weather-data {
+        flex: 1;
+      }
+      .weather-text {
+        font-size: 18px;
+        color: #c5c5c5;
+      }
+      .weather-data {
+        font-size: 24px;
+        white-space: nowrap;
+        margin-left: 4px;
+      }
+      .currentweather-wrap,
+      .forecast-temp-wrap {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-right: 22px;
+        min-width: 150px;
+      }
+      #current-weather {
+        font-size: 40px;
+      }
+      .weather-info-wrapper {
+        display: flex;
+      }
+      .forecast-info.day1-pop-wrap {
+        margin-right: 5px;
+        flex-direction: column;
+        align-items: flex-start;
+        min-width: 95px;
+      }
+      .weather-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        margin-right: 12px;
+      }
+      .forecast-info {
+        display: flex;
+        align-items: center;
+        margin-right: 28px;
+      }
+      .three-day-forecast {
+        margin-top: 24px;
+        display: flex;
+        flex-direction: column;
+      }
+      .forecast-item {
+        display: flex;
+        align-items: center;
+        border-top: 1px solid #5e5e5e;
+        padding: 2px 0;
+        padding-bottom: 2px;
+        text-align: center;
+        font-size: 20px;
+      }
+      .forecast-text {
+        font-size: 16px;
+        color: #c5c5c5;
+        margin-right: 4px;
+      }
+      #weather-time {
+        font-size: 40px;
+      }
+      #weather-date {
+        font-size: 28px;
+        color: #c5c5c5;
+      }
+      .weather-datetime {
+        margin-right: 20px;
+      }
+      #feelslike-weather {
+        color: #c5c5c5;
+        margin-left: 8px;
+        font-size: 26px;
+      }
+      .forecast-date {
+        min-width: 115px;
+        text-align: left;
+      }
+      .forecast-temp {
+        min-width: 40px;
+      }
+      .conditions-wrap {
+        min-width: 130px;
+        text-transform: capitalize;
+      }
+      .forecast-rain-wrap {
+        margin-top: -6px;
+        display: inline-flex;
+        align-items: center;
+      }
+      .forecast-rain {
+        font-size: 14px;
+      }
+      .forecast-pop {
+        font-size: 14px;
+      }
+      .forecast-rain-img {
+        margin-left: -12px;
+      }
+
+      #nhl-widget {
+        display: inline-flex;
+        flex-direction: column;
+        margin-top: 48px;
+        margin-right: 30px;
+      }
+      .nhl-game {
+        text-align: right;
+        margin: 6px 0;
+      }
+      .nhl-game-time {
+        color: #ababab;
+        font-size: 24px;
+        margin-right: 18px;
+        min-width: 105px;
+        text-align: right;
+        display: inline-block;
+      }
+      .nhl-teamname {
+        text-align: center;
+        display: inline-block;
+        font-size: 24px;
+        min-width: 48px;
+      }
+      .nhl-header {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+      }
+      .nhl-title {
+        font-size: 32px;
+      }
+      .nhl-game-vs {
+        color: #ababab;
+      }
+      .nhl-score {
+        font-size: 30px;
+      }
+      .home-score {
+        margin-right: 5px;
+      }
+      .away-score {
+        margin-left: 5px;
+      }
+      .final-score {
+        display: inline-block;
+        min-width: 50px;
+      }
+      #nhl-widget-content {
+        display: flex;
+        flex-direction: column;
+      }
+      #news-headlines {
+        text-align: right;
+        margin-top: 48px;
+        margin-right: 44px;
+        display: flex;
+        flex-direction: column;
+        max-width: 500px;
+      }
+      #top-headlines {
+        display: flex;
+        flex-direction: column;
+      }
+      .news-title {
+        font-size: 32px;
+        margin-bottom: 12px;
+      }
+      .news-description {
+        text-align: justify;
+        font-size: 24px;
+        color: #ababab;
+        animation: newsSnippet 0.5s linear;
+      }
+      .news-headline {
+        margin-bottom: 16px;
+        font-size: 28px;
+        animation: newsSnippet 0.5s linear;
+      }
+      .news-date {
+        text-align: right;
+        margin-top: 12px;
+        margin-right: 12px;
+        animation: newsSnippet 0.5s linear;
+      }
+
+      @keyframes newsSnippet {
+        0% {
+          opacity: 0;
+        }
+        25% {
+          opacity: 0.25;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        75% {
+          opacity: 0.75;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+
+  <script>
+    function getNHLGames() {
+      fetch("https://statsapi.web.nhl.com/api/v1/schedule")
+        .then((res) => res.json())
+        .then(async (data) => {
+          const nhlTimeOptions = {
+            hour: "numeric",
+            minute: "numeric",
+          };
+
+          const sortedGames = data.dates[0].games;
+          let template = "";
+          for (let i = 0; i < sortedGames.length; i++) {
+            const game = sortedGames[i];
+            const result = await fetch(
+              `https://statsapi.web.nhl.com/api/v1/game/${game.gamePk}/feed/live`
+            );
+            const gameData = await result.json();
+            const isGameOver =
+              gameData.liveData.linescore.currentPeriodTimeRemaining ===
+              "Final";
+            const isGameStarted = new Date() > new Date(game.gameDate);
+            const periodTime = `${gameData.liveData.linescore.currentPeriodTimeRemaining} ${gameData.liveData.linescore.currentPeriodOrdinal}`;
+
+            template += `
+              <div class="nhl-game">
+                <span class="final-score">${
+                  isGameStarted && !isGameOver ? `( ${periodTime} )` : ""
+                }</span>
+                <span class="nhl-game-home nhl-teamname">${
+                  gameData.gameData.teams.home.abbreviation
+                }</span>
+                <span class="nhl-score home-score">${
+                  isGameStarted
+                    ? gameData.liveData.linescore.teams.home.goals
+                    : ""
+                }</span>
+                <span class="nhl-game-vs">vs</span>
+                <span class="nhl-score away-score">${
+                  isGameStarted
+                    ? gameData.liveData.linescore.teams.away.goals
+                    : ""
+                }</span>
+                <span class="nhl-game-away nhl-teamname">${
+                  gameData.gameData.teams.away.abbreviation
+                }</span>
+                <span class="nhl-game-time">${
+                  !isGameOver
+                    ? new Intl.DateTimeFormat("en-US", nhlTimeOptions).format(
+                        new Date(game.gameDate)
+                      )
+                    : "FINAL"
+                }</span>
+              </div>
+            `;
+          }
+          document.getElementById("nhl-widget-content").innerHTML = template;
+        });
+    }
+
+    setInterval(getNHLGames, 30000);
+    getNHLGames();
+  </script>
+
+  <script>
+    function getWeather() {
+      const currentOptions = {
+        hour: "numeric",
+        minute: "numeric",
+      };
+      const mainDate = {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+      };
+
+      fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${YOUR_LAT}&lon=${YOUR_LONG}&units=metric&appid=${YOUR_APP_ID}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          // current weather
+          document.getElementById("current-weather").innerHTML = `${Math.round(
+            data.main.temp,
+            0
+          )}°C`;
+          // current time
+          document.getElementById("weather-date").innerHTML =
+            new Intl.DateTimeFormat("en-US", mainDate).format(new Date());
+          document.getElementById("weather-time").innerHTML =
+            new Intl.DateTimeFormat("en-US", currentOptions).format(new Date());
+          // feels like
+          document.getElementById(
+            "feelslike-weather"
+          ).innerHTML = `${Math.round(data.main.feels_like, 0)}°C`;
+          // weather icon
+          document.getElementById(
+            "weather-icon"
+          ).src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+          // sunrise
+          document.getElementById("sunrise-weather").innerHTML =
+            new Intl.DateTimeFormat("en-US", currentOptions).format(
+              data.sys.sunrise * 1000
+            );
+          // sunset
+          document.getElementById("sunset-weather").innerHTML =
+            new Intl.DateTimeFormat("en-US", currentOptions).format(
+              data.sys.sunset * 1000
+            );
+        });
+    }
+
+    setInterval(getWeather, 10000);
+    getWeather();
+  </script>
+
+  <script>
+    function getForecast() {
+      const forecastOptions = {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      };
+
+      fetch(
+        `https://api.openweathermap.org/data/2.5/onecall?lat=${YOUR_LAT}&lon=${YOUR_LONG}&units=metric&appid=${YOUR_APP_ID}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          // % precipitation for current hour
+          document.getElementById("pop-weather").innerHTML = `${Math.round(
+            data.hourly[0].pop * 100,
+            0
+          )}%`;
+
+          let template = "";
+          // daily conditions
+          Array.from(Array(4)).map((_, i) => {
+            const dayIndex = i;
+            const day = data.daily[dayIndex];
+
+            template += `
+              <div class="forecast-item day-1">
+                <span class="forecast-date">${
+                  dayIndex > 0
+                    ? new Intl.DateTimeFormat("en-US", forecastOptions).format(
+                        day.dt * 1000
+                      )
+                    : "Today"
+                }</span>
+                <div class="forecast-temp-wrap">
+                  <img src='http://openweathermap.org/img/wn/${
+                    day.weather[0].icon
+                  }.png' class="forecast-icon" />
+                  <span class="forecast-temp">${Math.round(
+                    day.temp.max,
+                    0
+                  )}°C / ${Math.round(day.temp.min, 0)}°C</span>
+                </div>
+                <div class="forecast-info conditions-wrap">
+                  <span class="forecast-text conditions">${
+                    day.weather[0].description
+                  }</span>
+                </div>
+                <div class="forecast-info day1-pop-wrap">
+                  <div>
+                    <span class="forecast-text">P.O.P</span>
+                    <span class="forecast-pop">${Math.round(
+                      day.pop * 100,
+                      0
+                    )}%</span>
+                  </div>
+                  <div class="forecast-rain-wrap">
+                    ${
+                      day.rain
+                        ? `<img class="forecast-rain-img" src="https://www.shareicon.net/data/2015/08/18/87002_raindrop_512x512.png" height="35" />
+                    <span class="forecast-rain">${`~${Math.round(
+                      day.rain > 1 ? day.rain : 1,
+                      0
+                    )}mm`}</span>`
+                        : ""
+                    }
+                  </div>
+                </div>
+             </div>
+            `;
+          });
+          document.getElementById("threedayforecast").innerHTML = template;
+        });
+    }
+
+    setInterval(getForecast, 600000);
+    getForecast();
+  </script>
+
+  <script>
+    let articles = [];
+    const newsOptions = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    };
+
+    function setNewsSnippet() {
+      const currentId =
+        document.getElementById("news-headline")?.attributes["data-index"]
+          .value;
+      const isTimeToLoop =
+        currentId && parseInt(currentId, 10) === articles.length - 1;
+      const id = currentId && !isTimeToLoop ? parseInt(currentId, 10) + 1 : 0;
+      const article = articles[id];
+      if (article) {
+        let template = "";
+        template += `
+          <span id="news-headline" data-index=${id} class="news-headline">${
+          article.title
+        }</span>
+          <span class="news-description">${article.description}</span>
+          <span class="news-date">${new Intl.DateTimeFormat(
+            "en-US",
+            newsOptions
+          ).format(new Date(article.publishedAt))}</span>
+          `;
+        document.getElementById("top-headlines").innerHTML = template;
+      }
+    }
+
+    function getNews() {
+      fetch("/api/news")
+        .then((res) => res.json())
+        .then((data) => {
+          articles = data.articles;
+          setNewsSnippet();
+        });
+    }
+
+    setInterval(getNews, 1800000);
+    setInterval(setNewsSnippet, 60000);
+    getNews();
+    setNewsSnippet();
+  </script>
+
+  <body>
+    <!-- weather-widget -->
+    <div class="weather-widget">
+      <span id="weather-date" class="weather-datetime"></span>
+      <span id="weather-time" class="weather-datetime"></span>
+      <div class="currentweather-wrap">
+        <img id="weather-icon" src="" />
+        <span id="current-weather"></span>
+        <span id="feelslike-weather"></span>
+      </div>
+      <div class="weather-info-wrapper">
+        <div class="weather-info pop-wrap">
+          <span class="weather-text">P.O.P</span>
+          <span id="pop-weather" class="weather-data"></span>
+        </div>
+        <div class="weather-info sunrise-wrap">
+          <span class="weather-text">Sunrise</span>
+          <span id="sunrise-weather" class="weather-data"></span>
+        </div>
+        <div class="weather-info sunrise-wrap">
+          <span class="weather-text">Sunset</span>
+          <span id="sunset-weather" class="weather-data"></span>
+        </div>
+      </div>
+
+      <div class="three-day-forecast" id="threedayforecast"></div>
+    </div>
+    <!-- end weather-widget -->
+
+    <br />
+
+    <!-- nhl-schedule -->
+    <div id="nhl-widget">
+      <div class="nhl-header">
+        <span class="nhl-title">Today's Games</span>
+        <img
+          height="75"
+          width="90"
+          src="https://1000logos.net/wp-content/uploads/2017/05/symbol-NHL.jpg"
+        />
+      </div>
+      <div id="nhl-widget-content"></div>
+    </div>
+    <!-- end nhl-schedule  -->
+
+    <!-- news-headlines -->
+    <div id="news-headlines">
+      <span class="news-title">The News</span>
+      <div id="top-headlines"></div>
+    </div>
+    <!-- end news-headlings -->
+  </body>
+</html>
